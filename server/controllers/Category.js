@@ -65,9 +65,71 @@ export const categoryPageDetails = async (req, res) => {
       .populate({
         path: "courses",
         match: { status: "Published" },
-        populate: "ratingAndReviews",
+        populate: [
+          {
+            path: "ratingAndReviews",
+            model: "RatingAndReview"
+          },
+          {
+            path: "courseContent", // Only populate Section level
+            model: "Section"
+          },
+          {
+            path: "instructor", // <- Populating the instructor
+            model: "User" // Assuming your instructor is from the User model
+          }
+        ],
       })
       .exec()
+
+    // Add averageRating to each course
+    let averageRatingsByCourseId = {};
+
+    if (selectedCategory && selectedCategory.courses) {
+      selectedCategory.courses.forEach(course => {
+        const totalRatings = course.totalrating || 0;
+        const totalReviews = course.ratingAndReviews?.length || 0;
+
+        const averageRating = totalReviews > 0
+          ? (totalRatings / totalReviews).toFixed(1)
+          : "0.0";
+
+        averageRatingsByCourseId[course._id.toString()] = parseFloat(averageRating);
+      });
+    }
+    
+    let courseDurationsById = {};
+    if (selectedCategory && selectedCategory.courses) {
+      selectedCategory.courses.forEach(course => {
+        let totalSeconds = 0;
+        // Sum timeDuration (in seconds) from each section in courseContent
+        if (Array.isArray(course.courseContent)) {
+          course.courseContent.forEach(section => {
+            if (typeof section.timeDuration === 'number') {
+              totalSeconds += section.timeDuration;
+            }
+          });
+        }
+        // Ensure totalSeconds is an integer
+        totalSeconds = Math.round(totalSeconds);
+        // Convert totalSeconds into hours, minutes, and seconds
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        // Format: "Xhr Ymin Zsec" (omit zero parts dynamically)
+        let formattedParts = [];
+        if (hours > 0) formattedParts.push(`${hours}hr`);
+        if (minutes > 0) formattedParts.push(`${minutes}min`);
+        if (seconds > 0 || formattedParts.length === 0) formattedParts.push(`${seconds}sec`);
+        const formattedDuration = formattedParts.join(' ');
+        // Save in object by course ID
+        courseDurationsById[course._id.toString()] = {
+          totalSeconds,
+          formatted: formattedDuration
+        };
+      });
+    }
+    console.log("Course Durations By ID:", courseDurationsById);
 
     //console.log("SELECTED COURSE", selectedCategory)
     // Handle the case when the category is not found
@@ -99,28 +161,41 @@ export const categoryPageDetails = async (req, res) => {
         match: { status: "Published" },
       })
       .exec()
-      //console.log("Different COURSE", differentCategory)
-    // Get top-selling courses across all categories
+
+    //console.log("Different COURSE", differentCategory)
     const allCategories = await Category.find()
       .populate({
         path: "courses",
         match: { status: "Published" },
         populate: {
           path: "instructor",
-      },
+        },
       })
       .exec()
-    const allCourses = allCategories.flatMap((category) => category.courses)
-    const mostSellingCourses = allCourses
-      .sort((a, b) => b.sold - a.sold)
-      .slice(0, 10)
-     // console.log("mostSellingCourses COURSE", mostSellingCourses)
+    // Sort the courses based on number of students enrolled (highest first)
+    const mostSellingCourses = selectedCategory.courses
+      .sort((a, b) => b.studentEnrolled.length - a.studentEnrolled.length)
+      .slice(0, 10); // pick first 3 courses
+
+    const mostPopularCourses = selectedCategory.courses
+      .sort((a, b) => b.totalrating - a.totalrating) // Sort descending by totalRating
+      .slice(0, 10); // Take top 5 courses
+
+    const newestCourses = selectedCategory.courses
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by newest first
+      .slice(0, 10); // Take top 5
+
+    // console.log("mostSellingCourses COURSE", mostSellingCourses)
     res.status(200).json({
       success: true,
       data: {
         selectedCategory,
         differentCategory,
         mostSellingCourses,
+        mostPopularCourses,
+        newestCourses,
+        averageRatingsByCourseId,
+        courseDurationsById
       },
     })
   } catch (error) {

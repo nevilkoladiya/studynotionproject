@@ -7,9 +7,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { resetPassword } from "../services/operations/authAPI";
 
 function UpdatePassword() {
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
+  
   const { loading } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     password: "",

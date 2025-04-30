@@ -25,7 +25,7 @@ export const createRating = async (req, res) => {
       studentEnrolled: { $elemMatch: { $eq: userId } },
     });
 
-    // console.log(courseDetails);
+    console.log(courseDetails);
     if (!courseDetails) {
       return res.status(404).json({
         success: false,
@@ -43,7 +43,7 @@ export const createRating = async (req, res) => {
         message: "Course is already reviewed by the user",
       });
     }
-    //create rating and review
+    // create rating and review
     const ratingReview = await RatingAndReview.create({
       rating,
       review,
@@ -58,6 +58,7 @@ export const createRating = async (req, res) => {
         $push: {
           ratingAndReviews: ratingReview._id,
         },
+        $inc: { totalrating: rating }, // ⭐ INCREMENT totalrating
       },
       { new: true }
     );
@@ -87,7 +88,7 @@ export const getAverageRating = async (req, res) => {
     const result = await RatingAndReview.aggregate([
       {
         $match: {
-          course: new mongoose.Types.ObjectId(courseId),
+          course: new mongoose.Types.ObjectId(String(courseId)),
         },
       },
       {

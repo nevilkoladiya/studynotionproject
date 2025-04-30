@@ -14,6 +14,11 @@ import {
   getFullCourseDetails,
   editCourse,
   timeDuration,
+  getTopShortCourses,
+  getMostSellingCourses,
+  getNewlyCreatedCourses,
+  getMostPopularCourses,
+  getCoursesByTag
 } from "../controllers/Coures.js";
 
 // Categories Controllers Import
@@ -87,6 +92,12 @@ router.delete("/deleteCourse", auth, isInstructor, deleteCourse);
 router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress);
 // Post remove courses subsections from course progress
 router.post("/removeCourseProgress",auth, isStudent, removeCourseProgress)
+
+router.get("/getTopShortCourses",getTopShortCourses)
+router.get("/getMostSellingCourses",getMostSellingCourses)
+router.get("/getNewlyCreatedCourses",getNewlyCreatedCourses)
+router.get("/getMostPopularCourses",getMostPopularCourses)
+router.post("/getCoursesByTag",getCoursesByTag)
 
 // // ********************************************************************************************************
 // //                                      Category routes (Only by Admin)

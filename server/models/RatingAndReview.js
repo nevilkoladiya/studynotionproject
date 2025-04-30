@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const ratingAndReviewSchema = new mongoose.Schema({
-  user: {
+	user: {
 		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "User",
@@ -22,4 +22,4 @@ const ratingAndReviewSchema = new mongoose.Schema({
 	},
 });
 
-export default mongoose.model("RatingAndReview",ratingAndReviewSchema)
+export default mongoose.model("RatingAndReview", ratingAndReviewSchema)

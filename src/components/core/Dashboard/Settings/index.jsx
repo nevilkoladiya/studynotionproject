@@ -5,7 +5,7 @@ import UpdatePassword from "./UpdatePassword"
 
 export default function Settings() {
   return (
-    <>
+    <div className="w-10/12 mx-auto pb-4">
       <h1 className="mb-8 text-3xl font-medium text-richblack-5">
         Edit Profile
       </h1>
@@ -17,6 +17,6 @@ export default function Settings() {
       <UpdatePassword />
       {/* Delete Account */}
       <DeleteAccount />
-    </>
+    </div>
   )
 }

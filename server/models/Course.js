@@ -35,6 +35,11 @@ const courseSchema = new mongoose.Schema({
       ref: "RatingAndReview",
     },
   ],
+  totalrating: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   price: {
     type: Number,
     required: true,
@@ -46,21 +51,21 @@ const courseSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
   },
-  tag:{
-    type:[String],
-    required:true,
+  tag: {
+    type: [String],
+    required: true,
   },
-  status:{
-    type:String,
-    enum:["Draft","Published","Approved"]
+  status: {
+    type: String,
+    enum: ["Draft", "Published", "Approved"]
   },
   createdAt: {
-		type:Date,
-		default:Date.now
-	},
+    type: Date,
+    default: Date.now
+  },
   instructions: {
-		type: [String],
-	},
+    type: [String],
+  },
 });
 
-export default mongoose.model("Course",courseSchema)
+export default mongoose.model("Course", courseSchema)

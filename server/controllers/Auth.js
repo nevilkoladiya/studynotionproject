@@ -9,7 +9,7 @@ import { passwordUpdated } from "../mail/templates/passwordUpdate.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-//sendOTP
+//sendOTP: fetch email from req > generate unique otp > db entry
 export const sendOTP = async (req, res) => {
   try {
     //fetch email from body
@@ -51,7 +51,7 @@ export const sendOTP = async (req, res) => {
 
     //enter the otp in database
     const otpBody = await OTP.create(otpPayload);
-    // console.log(otpBody);
+    console.log(otpBody);
 
     //return response successful
     res.status(200).json({
@@ -68,7 +68,7 @@ export const sendOTP = async (req, res) => {
   }
 };
 
-//signUp
+//signUp: fetch userData from req > have All field? > both pass same? > user already exist? > find recent otp from db > validate otp > db entry
 export const signUp = async (req, res) => {
   try {
     const {
@@ -175,7 +175,7 @@ export const signUp = async (req, res) => {
   }
 };
 
-//login
+//login: fetch data from req > have All field? > check exist or not > generate JWT , after password matching > create cookies and send response __________________________________________________________________________________________________________
 export const login = async (req, res) => {
   try {
     //get data from req
@@ -248,7 +248,7 @@ export const changePassword = async (req, res) => {
     // Get old password, new password, and confirm new password from req.body
     const { oldPassword, newPassword, confirmNewPassword } = req.body
 
-        //valdition
+    //valdition
     if (!oldPassword && !newPassword && !confirmNewPassword) {
       return res.status(403).json({
         success: false,
@@ -256,14 +256,14 @@ export const changePassword = async (req, res) => {
       });
     }
 
-  if(newPassword!==confirmNewPassword){
-    return res.status(403).json({
-      success:false,
-      message:"Confirm NewPassword and NewPassword not matched"
-    })
-  }
+    if (newPassword !== confirmNewPassword) {
+      return res.status(403).json({
+        success: false,
+        message: "Confirm NewPassword and NewPassword not matched"
+      })
+    }
 
-  
+
     // Validate old password
     const isPasswordMatch = await bcrypt.compare(
       oldPassword,

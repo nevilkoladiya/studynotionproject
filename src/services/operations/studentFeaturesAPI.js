@@ -54,6 +54,7 @@ export async function buyCourse(
         Authorization: `Bearer ${token}`,
       }
     );
+    console.log("ORDER API RESPONSE: ", orderResponse);
 
     if (!orderResponse.data.success) {
       throw new Error(orderResponse.data.message);
@@ -61,7 +62,7 @@ export async function buyCourse(
     // console.log("PRINTING orderResponse", orderResponse);
     //options
     const options = {
-      key: "rzp_test_LrlT8htfWN8Wwg",
+      key: "rzp_test_AmL2icv1tOGdeZ",
       currency: orderResponse.data.message.currency,
       amount: `${orderResponse.data.message.amount}`,
       order_id: orderResponse.data.message.id,

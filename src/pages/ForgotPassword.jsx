@@ -6,6 +6,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { getPasswordResetToken } from "../services/operations/authAPI";
 
 const ForgotPassword = () => {
+
   const { loading } = useSelector((state) => state.auth);
   const [emailSent, setEmailSent] = useState(false);
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ const ForgotPassword = () => {
     e.preventDefault();
     dispatch(getPasswordResetToken(email, setEmailSent));
   };
+
   return (
     <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
       {loading ? (
@@ -35,7 +37,7 @@ const ForgotPassword = () => {
               <label className="w-full">
                 <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
                   Email Address{" "}
-                  <sup className="text-pink-200 flex gap-1">*</sup>
+                  <sub className="text-pink-200 flex gap-1">*</sub>
                 </p>
                 <input
                   required
@@ -55,6 +57,7 @@ const ForgotPassword = () => {
               {!emailSent ? "Reset Password" : "Resend Email"}
             </button>
           </form>
+          
           <div className="mt-6 flex items-center justify-between">
             <NavLink to="/login">
               <p className="flex items-center gap-x-2 text-richblack-5">

@@ -34,7 +34,12 @@ export const createSubSection = async (req, res) => {
     // Update the corresponding section with the newly created sub-section
     const updatedSection = await Section.findByIdAndUpdate(
       { _id: sectionId },
-      { $push: { subSection: SubSectionDetails._id } },
+      { 
+        $push: { 
+          subSection: SubSectionDetails._id 
+        },
+        $inc: { timeDuration: uploadDetails.duration },
+      },
       { new: true }
     ).populate("subSection");
 
@@ -109,6 +114,8 @@ export const deleteSubSection = async (req, res) => {
   try {
     //getId //assuming that id sending in params
     const { subSectionId, sectionId } = req.params;
+
+    // console.log(sectionId)
 
     //data validation
     if (!subSectionId || !sectionId) {

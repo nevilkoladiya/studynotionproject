@@ -10,7 +10,7 @@ const MyProfile = () => {
   const navigate = useNavigate();
   // console.log(user?.additionalDetails?.dateOfBirth);
   return (
-    <div>
+    <div className="w-10/12 mx-auto pb-6">
       <h1 className="mb-8 text-3xl font-medium text-richblack-5">My Profile</h1>
 
       {/* Profile photo and name section */}

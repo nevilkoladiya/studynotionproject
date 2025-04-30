@@ -91,6 +91,8 @@ export const deleteSection = async (req, res) => {
     //getId //assuming that id sending in params
     const { sectionId, courseId } = req.body;
 
+    console.log(sectionId);
+
     //delete section from courseschema
     await Course.findByIdAndUpdate(
       courseId,

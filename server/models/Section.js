@@ -11,6 +11,10 @@ const sectionSchema = new mongoose.Schema({
       ref: "SubSection",
     },
   ],
+  timeDuration: {
+    type: Number,
+    default: "0",  
+  },
 });
 
 export default mongoose.model("Section",sectionSchema)

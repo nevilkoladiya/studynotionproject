@@ -260,7 +260,6 @@ export const getEnrolledCourses = async (req, res) => {
   }
 };
 
-
 export const instructorDashboard = async (req, res) => {
   try {
     const courseDetails = await Course.find({ instructor: req.user.id })

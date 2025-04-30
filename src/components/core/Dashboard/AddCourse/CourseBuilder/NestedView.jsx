@@ -96,6 +96,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                 <AiFillCaretDown className={`text-xl text-richblack-300`} />
               </div>
             </summary>
+
             <div className="px-6 pb-4">
               {/* Render All Sub Sections Within a Section */}
               {section.subSection.map((data) => (
@@ -128,8 +129,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                           text2: "This lecture will be deleted",
                           btn1Text: "Delete",
                           btn2Text: "Cancel",
-                          btn1Handler: () =>
-                            handleDeleteSubSection(data._id, section._id),
+                          btn1Handler: () => handleDeleteSubSection(data._id, section._id),
                           btn2Handler: () => setConfirmationModal(null),
                         })
                       }

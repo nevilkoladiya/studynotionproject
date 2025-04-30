@@ -9,9 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const { loading: authLoading } = useSelector((state) => state.auth);
-  const { user, loading: profileLoading } = useSelector(
-    (state) => state.profile
-  );
+  const { user, loading: profileLoading } = useSelector((state) => state.profile);
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -38,12 +36,16 @@ const Sidebar = () => {
             );
           })}
         </div>
+        
         <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-700" />
+
         <div className="flex flex-col">
+
           <SidebarLink
             link={{ name: "Settings", path: "/dashboard/settings" }}
             iconName="VscSettingsGear"
           />
+
           <button
             onClick={() =>
               setConfirmationModal({

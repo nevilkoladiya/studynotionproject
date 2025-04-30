@@ -1,4 +1,5 @@
 import { FaCheck } from "react-icons/fa";
+
 import { useSelector } from "react-redux";
 
 import CourseBuilderForm from "./CourseBuilder/CourseBuilderForm";
@@ -24,7 +25,7 @@ export default function RenderSteps() {
   ];
 
   return (
-    <>
+    <div className="pb-6">
       <div className="relative mb-2 flex w-full justify-center">
         {steps.map((item, i) => (
           <>
@@ -34,7 +35,7 @@ export default function RenderSteps() {
                   step === item.id
                     ? "border-yellow-50 bg-yellow-900 text-yellow-50"
                     : "border-richblack-700 bg-richblack-800 text-richblack-300"
-                } ${step > item.id && "bg-yellow-50 text-yellow-50"}} `}
+                } ${step > item.id && "bg-yellow-50 text-yellow-50"} `}
               >
                 {step > item.id ? (
                   <FaCheck className="font-bold text-richblack-900" />
@@ -74,10 +75,11 @@ export default function RenderSteps() {
           </>
         ))}
       </div>
+
       {/* Render specific component based on current step */}
       {step === 1 && <CourseInformationForm />}
       {step === 2 && <CourseBuilderForm />}
       {step === 3 && <PublishCourse />}
-    </>
+    </div>
   );
 }

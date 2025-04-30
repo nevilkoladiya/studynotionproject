@@ -96,3 +96,106 @@ export const contactUsEmail = (
     
     </html>`
   }
+
+  export const adminRespondTo = (
+    firstname,
+    lastname,
+    userMessage,
+    adminResponse
+  ) => {
+    return `<!DOCTYPE html>
+    <html>
+  
+    <head>
+        <meta charset="UTF-8">
+        <title>Response to Your Inquiry</title>
+        <style>
+            body {
+                background-color: #ffffff;
+                font-family: Arial, sans-serif;
+                font-size: 16px;
+                line-height: 1.4;
+                color: #333333;
+                margin: 0;
+                padding: 0;
+            }
+  
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                text-align: center;
+            }
+  
+            .logo {
+                max-width: 200px;
+                margin-bottom: 20px;
+            }
+  
+            .message {
+                font-size: 20px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: #000000;
+            }
+  
+            .body {
+                font-size: 16px;
+                margin-bottom: 20px;
+                text-align: left;
+            }
+  
+            .highlight {
+                font-weight: bold;
+                color: #000000;
+            }
+  
+            .section-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-top: 20px;
+                margin-bottom: 10px;
+                color: #333333;
+            }
+  
+            .support {
+                font-size: 14px;
+                color: #999999;
+                margin-top: 20px;
+                text-align: center;
+            }
+        </style>
+  
+    </head>
+  
+    <body>
+        <div class="container">
+            <a href="https://studynotion-edtech-project.vercel.app">
+                <img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png" alt="StudyNotion Logo">
+            </a>
+            <div class="message">We've Responded to Your Inquiry</div>
+            <div class="body">
+                <p>Dear <span class="highlight">${firstname} ${lastname}</span>,</p>
+  
+                <p>Thank you for reaching out to us. We appreciate your patience and have responded to your message.</p>
+  
+                <div class="section-title">Your Question:</div>
+                <p>${userMessage}</p>
+  
+                <div class="section-title">Admin's Response:</div>
+                <p>${adminResponse}</p>
+  
+                <p>If you have any more questions or need further assistance, feel free to reply to this email.</p>
+  
+                <p>Best regards,<br>StudyNotion Team</p>
+            </div>
+  
+            <div class="support">
+                Need immediate help? Contact us at <a href="mailto:info@studynotion.com">info@studynotion.com</a>.
+            </div>
+        </div>
+    </body>
+  
+    </html>`;
+  };
+  

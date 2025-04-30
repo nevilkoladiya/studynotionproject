@@ -23,7 +23,8 @@ const {
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
   GET_TIMEDURATION_OF_PERTICULAR_COURSE,
-  REMOVE_COURSEPROGRESS
+  REMOVE_COURSEPROGRESS,
+  CREATE_COURCE_CATEGORY
 } = courseEndpoints;
 
 export const getAllCourses = async () => {
@@ -79,7 +80,7 @@ export const fetchCourseCategories = async () => {
     result = response?.data?.data;
   } catch (error) {
     // console.log("COURSE_CATEGORY_API API ERROR............", error)
-    toast.error(error.message);
+    // toast.error(error.message);
   }
   return result;
 };
@@ -436,6 +437,31 @@ export const removeCourseProgress = async (data, token) => {
     toast.error(error.message);
     result = false;
   }
+  toast.dismiss(toastId);
+  return result;
+};
+
+// create category
+export const createCategoryAPI = async (data, token) => {
+  let result = null;
+  const toastId = toast.loading("Creating category...");
+
+  try {
+    const response = await apiConnector("POST", CREATE_COURCE_CATEGORY, data, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could Not Create Category");
+    }
+
+    toast.success("Category Created Successfully");
+    result = response?.data;
+  } catch (error) {
+    console.error("CREATE CATEGORY API ERROR:", error);
+    toast.error(error?.response?.data?.message || error.message || "Failed to create category");
+  }
+
   toast.dismiss(toastId);
   return result;
 };

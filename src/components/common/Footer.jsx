@@ -18,19 +18,13 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-b-[0.2px] border-richblack-700 w-[86%] mx-auto"></div>
-      <div className="lg:pt-14 pt-6 pb-14 text-[15px] w-[90%] lg:w-[84%] mx-auto text-richblack-400 text-base font-inter flex sm:flex-row flex-col justify-between">
+      <div className="py-6 text-[15px] w-[90%] lg:w-[84%] mx-auto text-richblack-400 text-base font-inter flex sm:flex-row flex-col justify-between">
         <div className="flex sm:flex-row flex-col">
           <NavLink
             className="border-richblack-700 hover:text-richblack-50 border-b-[0.2px] sm:py-0 py-2 sm:text-start text-center sm:border-b-0 sm:border-r-[0.2px] px-3"
             to="privacy-policy"
           >
             Privacy Policy
-          </NavLink>
-          <NavLink
-            className="border-richblack-700 hover:text-richblack-50 border-b-[0.2px] sm:py-0 py-2  sm:text-start text-center sm:border-b-0 sm:border-r-[0.2px] px-3"
-            to="cookie-policy"
-          >
-            Cookie Policy
           </NavLink>
           <NavLink
             className="px-3 sm:text-start text-center sm:py-0 py-2 pb-5 hover:text-richblack-50"
@@ -40,7 +34,7 @@ const Footer = () => {
           </NavLink>
         </div>
         <div className="text-center text-[15px]">
-          Made with ❤️ DBDHelp © 2024 Studynotion
+          Made by SS © 2025 Studynotion
         </div>
       </div>
     </div>

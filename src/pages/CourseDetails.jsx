@@ -20,6 +20,7 @@ import { toast } from "react-hot-toast";
 
 
 function CourseDetails() {
+  
   const { user } = useSelector((state) => state.profile);
   const { token } = useSelector((state) => state.auth);
   const { loading } = useSelector((state) => state.profile);

@@ -25,7 +25,7 @@ export default function EnrolledCourses() {
   }, [])
 
   return (
-    <>
+    <div className="w-10/12 mx-auto">
       <div className="text-3xl text-richblack-50">Enrolled Courses</div>
       {!enrolledCourses ? (
         <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
@@ -63,7 +63,7 @@ export default function EnrolledCourses() {
                 <img
                   src={course.thumbnail}
                   alt="course_img"
-                  className="h-14 w-14 rounded-lg object-cover"
+                  className="h-14 w-28 rounded-lg object-cover"
                 />
                 <div className="flex max-w-xs flex-col gap-2">
                   <p className="font-semibold">{course.courseName}</p>
@@ -87,6 +87,6 @@ export default function EnrolledCourses() {
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }

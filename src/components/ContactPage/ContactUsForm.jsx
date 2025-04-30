@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import CountryCode from "../../data/countrycode.json";
-import { apiConnector } from "../../services/apiconnector";
-import { contactusEndpoint } from "../../services/api";
+
+import { submitContactFormAPI } from "../../services/operations/contactUsAPI";
+import { useSelector } from "react-redux";
+
 
 const ContactUsForm = () => {
+
   const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -14,15 +18,14 @@ const ContactUsForm = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
+  const { token } = useSelector((state) => state.auth)
+
   const submitContactForm = async (data) => {
+    console.log("Submitting form with data:", data);
     // console.log("Form Data - ", data)
     try {
       setLoading(true);
-      const res = await apiConnector(
-        "POST",
-        contactusEndpoint.CONTACT_US_API,
-        data
-      );
+      const success = await submitContactFormAPI(data, token);
       // console.log("Email Res - ", res)
       setLoading(false);
     } catch (error) {

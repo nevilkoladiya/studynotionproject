@@ -11,6 +11,7 @@ import { updateCompletedLectures } from "../../../slices/viewCourseSlice";
 import IconBtn from "../../common/IconBtn";
 
 const VideoDetails = () => {
+
   const { courseId, sectionId, subSectionId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -240,11 +241,10 @@ const VideoDetails = () => {
         </Player>
       )}
 
-      <h1 className="mt-4 text-3xl font-semibold">{videoData?.title}</h1>
-      <p className="pt-2 pb-6">{videoData?.description}</p>
+      <h1 className="mt-4 text-slate-300 text-3xl font-semibold">{videoData?.title}</h1>
+      <p className="pt-2 pb-6 text-slate-100">{videoData?.description}</p>
     </div>
   );
 };
 
 export default VideoDetails;
-// video

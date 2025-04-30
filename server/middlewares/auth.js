@@ -24,7 +24,7 @@ export const auth = (req, res, next) => {
     try {
       const decode = jwt.verify(token, process.env.JWT_SECRET);
       // console.log(decode);
-      req.user = decode;
+      req.user = decode; // making user field in req that other middleware access decoded payload
     } catch (error) {
       return res.status(401).json({
         success: false,

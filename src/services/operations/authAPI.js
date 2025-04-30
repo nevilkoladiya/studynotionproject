@@ -21,9 +21,9 @@ export function sendOtp(email, navigate) {
         email,
         checkUserPresent: true,
       });
-      // console.log("SENDOTP API RESPONSE............", response);
+      console.log("SENDOTP API RESPONSE............", response);
 
-      // console.log(response.data.success);
+      console.log(response.data.success);
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -32,7 +32,7 @@ export function sendOtp(email, navigate) {
       toast.success("OTP Sent Successfully");
       navigate("/verify-email");
     } catch (error) {
-      // console.log("SENDOTP API ERROR............", error);
+      console.log("SENDOTP API ERROR............", error);
       toast.error(error.response.data.message??"Could Not Send OTP");
     }
     dispatch(setLoading(false));
@@ -176,5 +176,31 @@ export function resetPassword(password, confirmPassword, token, navigate) {
       toast.error(error.response.data.message??"Unable to reset password");
     }
     dispatch(setLoading(false));
+  };
+}
+
+// for creation of admin account
+export function sendAdminOtp(email, navigate) {
+  return async (dispatch) => {
+    const toastId = toast.loading("Loading...");
+    try {
+      const response = await apiConnector("POST", SENDOTP_API, {
+        email,
+        checkUserPresent: true,
+      });
+
+      // console.log("SENDOTP API RESPONSE............", response);
+      console.log(response.data.success);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+      toast.success("Admin's OTP Sent Successfully");
+      navigate("/dashboard/verifyemail");
+    } catch (error) {
+      console.log("SENDOTP API ERROR............", error);
+      toast.error(error.response.data.message??"Could Not Send OTP");
+    }
+    toast.dismiss(toastId);
   };
 }

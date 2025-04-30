@@ -7,23 +7,23 @@ import { courseEnrollmentEmail } from "../mail/templates/courseEnrollmentEmail.j
 import {paymentSuccessEmail} from "../mail/templates/paymentSuccessEmail.js"
 import { default as mongoose } from "mongoose";
 import crypto from "crypto" 
-
+import dotenv from "dotenv";
+dotenv.config();
 
 // Capture the payment and initiate the Razorpay order
 export const capturePayment = async (req, res) => {
   const { courses } = req.body
   const userId = req.user.id
+
   if (courses.length === 0) {
     return res.json({ success: false, message: "Please Provide Course ID" })
   }
 
   let total_amount = 0
-
   for (const course_id of courses) {
     let course
     try {
       // Find the course by its ID
-      console.log("id",course_id)
       course = await Course.findById(course_id)
 
       // If the course is not found, return an error
@@ -34,7 +34,7 @@ export const capturePayment = async (req, res) => {
       }
 
       // Check if the user is already enrolled in the course
-      const uid = new mongoose.Types.ObjectId(userId)
+      const uid = new mongoose.Types.ObjectId(String(userId))
       if (course.studentEnrolled.includes(uid)) {
         return res
           .status(200)
@@ -48,13 +48,11 @@ export const capturePayment = async (req, res) => {
       return res.status(500).json({ success: false, message: error.message })
     }
   }
-
   const options = {
     amount: total_amount * 100,
     currency: "INR",
     receipt: Math.random(Date.now()).toString(),
   }
-
   try {
     // Initiate the payment using Razorpay
     const paymentResponse = await instance.orders.create(options)
@@ -92,10 +90,15 @@ export const verifyPayment = async (req, res) => {
 
   let body = razorpay_order_id + "|" + razorpay_payment_id
 
+  console.log("body",body)
+  console.log("razorpay_signature",razorpay_signature)
+
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_SECRET)
     .update(body.toString())
     .digest("hex")
+
+  console.log("expectedSignature",expectedSignature)
 
   if (expectedSignature === razorpay_signature) {
     await enrollStudents(courses, userId, res)
@@ -160,7 +163,6 @@ const enrollStudents = async (courses, userId, res) => {
           .status(500)
           .json({ success: false, error: "Course not found" })
       }
-      console.log("Updated course: ", enrolledCourse)
 
       const courseProgress = await CourseProgress.create({
         courseID: courseId,
@@ -179,7 +181,6 @@ const enrollStudents = async (courses, userId, res) => {
         { new: true }
       )
 
-      console.log("Enrolled student: ", enrolledStudent)
       // Send an email notification to the enrolled student
       const emailResponse = await mailSender(
         enrolledStudent.email,
@@ -189,8 +190,6 @@ const enrollStudents = async (courses, userId, res) => {
           `${enrolledStudent.firstName} ${enrolledStudent.lastName}`
         )
       )
-
-      console.log("Email sent successfully: ", emailResponse.response)
     } catch (error) {
       console.log(error)
       return res.status(400).json({ success: false, error: error.message })

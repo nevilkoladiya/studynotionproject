@@ -53,10 +53,14 @@ export const createCourse = async (req, res) => {
     if (!status || status === undefined) {
       status = "Draft";
     }
-    // Check if the user is an instructor
+    // Check if the user is an instructor // just trusting GPT
     const instructorDetails = await User.findById(userId, {
       accountType: "Instructor",
     });
+    // const instructorDetails = await User.findOne({
+    //   _id: userId,
+    //   accountType: "Instructor",
+    // });
 
     if (!instructorDetails) {
       return res.status(404).json({
@@ -205,11 +209,11 @@ export const editCourse = async (req, res) => {
 //get all courses
 export const getAllCourses = async (req, res) => {
   try {
-    const allCourse = await Course.find({}); //chamge the below statement
+    const allCourse = await Course.find({}); //change the below statement
 
     return res.status(200).json({
       success: true,
-      message: "Date for all Courses successfully",
+      message: "Data for all Courses successfully",
       data: allCourse,
     });
   } catch (error) {
@@ -568,6 +572,433 @@ export const getFullCourseDetails = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+// export const getMostSellingCourses = async (req, res) => {
+//   try {
+//     // Fetch top 10 courses with most students enrolled
+//     const mostSellingCourses = await Course.aggregate([
+//       {
+//         $match: {
+//           status: "Published",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           enrolledCount: {
+//             $size: "$studentEnrolled", // Use $size directly on the studentEnrolled array
+//           },
+//         },
+//       },
+//       {
+//         $sort: {
+//           enrolledCount: -1, // Sort by most enrolled students
+//         },
+//       },
+//       {
+//         $limit: 10, // Fetch top 10 most selling courses
+//       },
+//       // Join instructor details
+//       {
+//         $lookup: {
+//           from: "users", // Assuming "users" is the name of the user collection
+//           localField: "instructor",
+//           foreignField: "_id",
+//           as: "instructor",
+//         },
+//       },
+//       {
+//         $unwind: "$instructor", // Flatten the instructor object
+//       },
+//       // Join reviews
+//       {
+//         $lookup: {
+//           from: "ratingandreviews", // Assuming "ratingandreviews" is the name of the reviews collection
+//           localField: "_id",
+//           foreignField: "course",
+//           as: "reviews",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           averageRating: {
+//             $cond: [
+//               { $gt: [{ $size: "$reviews" }, 0] },
+//               {
+//                 $divide: [
+//                   { $floor: { $multiply: [{ $avg: "$reviews.rating" }, 10] } },
+//                   10,
+//                 ],
+//               },
+//               null,
+//             ],
+//           },
+//           totalReviews: { $size: "$reviews" },
+//         },
+//       },
+//       {
+//         $project: {
+//           courseName: 1,
+//           courseDescription: 1,
+//           thumbnail: 1,
+//           enrolledCount: 1,
+//           averageRating: 1,
+//           totalReviews: 1,
+//           instructor: {
+//             firstName: "$instructor.firstName",
+//             lastName: "$instructor.lastName",
+//             email: "$instructor.email",
+//           },
+//         },
+//       },
+//     ]);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Top selling courses fetched successfully",
+//       data: mostSellingCourses,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching top selling courses:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Unable to fetch most selling courses",
+//     });
+//   }
+// };
+
+// export const getTopShortCourses = async (req, res) => {
+//   try {
+//     const shortCourses = await Course.aggregate([
+//       // Join sections to calculate total duration
+//       {
+//         $lookup: {
+//           from: "sections",
+//           localField: "courseContent",
+//           foreignField: "_id",
+//           as: "sections",
+//         },
+//       },
+//       {
+//         $match: {
+//           status: "Published",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           totalDurationInSeconds: { $sum: "$sections.totalDuration" },
+//         },
+//       },
+
+//       // Join instructor details
+//       {
+//         $lookup: {
+//           from: "users",
+//           localField: "instructor",
+//           foreignField: "_id",
+//           as: "instructorDetails",
+//         },
+//       },
+//       {
+//         $unwind: "$instructorDetails",
+//       },
+
+//       // Join ratings
+//       {
+//         $lookup: {
+//           from: "ratingandreviews",
+//           localField: "_id",
+//           foreignField: "course",
+//           as: "reviews",
+//         },
+//       },
+//       {
+//         $addFields: {
+//           averageRating: { $avg: "$reviews.rating" },
+//           totalReviews: { $size: "$reviews" },
+//         },
+//       },
+
+//       // Sort and limit to top 10 short courses
+//       {
+//         $sort: {
+//           totalDurationInSeconds: 1,
+//         },
+//       },
+//       {
+//         $limit: 10,
+//       },
+
+//       // Final projection
+//       {
+//         $project: {
+//           courseName: 1,
+//           courseDescription: 1,
+//           thumbnail: 1,
+//           totalDuration: {
+//             $concat: [
+//               { $toString: { $floor: { $divide: ["$totalDurationInSeconds", 60] } } },
+//               " mins",
+//             ],
+//           },
+//           averageRating: { $round: ["$averageRating", 1] },
+//           totalReviews: 1,
+//           instructor: {
+//             firstName: "$instructorDetails.firstName",
+//             lastName: "$instructorDetails.lastName",
+//             email: "$instructorDetails.email",
+//           },
+//         },
+//       },
+//     ]);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Top 10 shortest courses fetched successfully",
+//       data: shortCourses,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching short courses:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch top short-length courses",
+//     });
+//   }
+// };
+
+export const getNewlyCreatedCourses = async (req, res) => {
+  try {
+    // Fetch the top 10 newly created courses
+    const newlyCreatedCourses = await Course.find({ status: "Published" })
+      .sort({ createdAt: -1 }) // Sort by most recently created
+      .limit(10) // Fetch top 10
+      .populate("instructor") // Populate instructor details
+      .populate("ratingAndReviews") // Optional: populate rating and reviews
+      .exec();
+
+    // If the courses are found, return success with courses
+    return res.status(200).json({
+      success: true,
+      message: "Top newly created courses fetched successfully",
+      data: newlyCreatedCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching top newly created courses:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch newly created courses",
+    });
+  }
+};
+
+export const getMostPopularCourses = async (req, res) => {
+  try {
+    // Fetch top 10 courses sorted by totalrating in descending order (most popular)
+    const mostPopularCourses = await Course.find({ status: "Published" })
+      .sort({ totalrating: -1 }) // Sort by highest totalrating (most popular)
+      .limit(10) // Limit to top 10 courses
+      .populate("instructor") // Populate instructor details
+      .populate("ratingAndReviews") // Optional: populate rating and reviews
+      .exec();
+
+    // If the courses are found, return success with courses
+    return res.status(200).json({
+      success: true,
+      message: "Top popular courses fetched successfully",
+      data: mostPopularCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching most popular courses:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch most popular courses",
+    });
+  }
+};
+
+export const getMostSellingCourses = async (req, res) => {
+  try {
+    // Find published courses and sort by number of students enrolled (most selling)
+    const mostSellingCourses = await Course.find({ status: "Published" })
+      .sort({ studentEnrolled: -1 }) // Sort by number of students (most to least)
+      .limit(10) // Top 10 courses
+      .populate("instructor", "firstName lastName email") // Only selected instructor fields
+      .populate("ratingAndReviews") // Populate review documents
+      .exec();
+
+    // Return the data
+    return res.status(200).json({
+      success: true,
+      message: "Top selling courses fetched successfully",
+      data: mostSellingCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching top selling courses:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch most selling courses",
+    });
+  }
+};
+
+export const getTopShortCourses = async (req, res) => {
+  try {
+    const shortCourses = await Course.aggregate([
+      {
+        $match: {
+          status: "Published",
+        },
+      },
+      {
+        $lookup: {
+          from: "sections",
+          localField: "courseContent",
+          foreignField: "_id",
+          as: "sections",
+        },
+      },
+      {
+        $addFields: {
+          totalDuration: {
+            $sum: "$sections.timeDuration",
+          },
+        },
+      },
+      {
+        $match: {
+          totalDuration: { $lt: 1800 },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "instructor",
+          foreignField: "_id",
+          as: "instructor",
+        },
+      },
+      {
+        $unwind: "$instructor",
+      },
+      {
+        $lookup: {
+          from: "ratingandreviews",
+          localField: "_id",
+          foreignField: "course",
+          as: "ratingAndReviews",
+        },
+      },
+      {
+        $project: {
+          courseName: 1,
+          totalDuration: 1,
+          thumbnail: 1,
+          price: 1,
+          instructor: {
+            firstName: "$instructor.firstName",
+            lastName: "$instructor.lastName",
+            email: "$instructor.email",
+          },
+          ratingAndReviews: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Courses with duration < 30 minutes fetched successfully",
+      data: shortCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching short duration courses:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch short courses",
+    });
+  }
+};
+
+
+//get all courses
+export const getCoursesByTag = async (req, res) => {
+  try {
+    const { tag } = req.body; // Or req.query if you're sending via URL query
+    if (!tag) {
+      return res.status(400).json({ success: false, message: "Tag is required" });
+    }
+    const courses = await Course.find({
+      tag: tag,
+      status: "Published"
+    })
+      .populate("ratingAndReviews")
+      .populate("courseContent") // Sections
+      .populate("instructor", "firstName lastName email") // Only select fields
+      .exec();
+
+    let averageRatingsByCourseId = {};
+    if (courses) {
+      courses.forEach(course => {
+        const totalRatings = course.totalrating || 0;
+        const totalReviews = course.ratingAndReviews?.length || 0;
+
+        const averageRating = totalReviews > 0
+          ? (totalRatings / totalReviews).toFixed(1)
+          : "0.0";
+
+        averageRatingsByCourseId[course._id.toString()] = parseFloat(averageRating);
+      });
+    }
+    console.log(averageRatingsByCourseId);
+
+    let courseDurationsById = {};
+    if (courses) {
+      courses.forEach(course => {
+        let totalSeconds = 0;
+        // Sum timeDuration (in seconds) from each section in courseContent
+        if (Array.isArray(course.courseContent)) {
+          course.courseContent.forEach(section => {
+            if (typeof section.timeDuration === 'number') {
+              totalSeconds += section.timeDuration;
+            }
+          });
+        }
+        // Ensure totalSeconds is an integer
+        totalSeconds = Math.round(totalSeconds);
+        // Convert totalSeconds into hours, minutes, and seconds
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        // Format: "Xhr Ymin Zsec" (omit zero parts dynamically)
+        let formattedParts = [];
+        if (hours > 0) formattedParts.push(`${hours}hr`);
+        if (minutes > 0) formattedParts.push(`${minutes}min`);
+        if (seconds > 0 || formattedParts.length === 0) formattedParts.push(`${seconds}sec`);
+        const formattedDuration = formattedParts.join(' ');
+        // Save in object by course ID
+        courseDurationsById[course._id.toString()] = {
+          totalSeconds,
+          formatted: formattedDuration
+        };
+      });
+    }
+    console.log("Course Durations By ID:", courseDurationsById);
+
+
+    res.status(200).json({
+      success: true,
+      data: {
+        courses,
+        averageRatingsByCourseId,
+        courseDurationsById
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching courses by tag:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
     });
   }
 };

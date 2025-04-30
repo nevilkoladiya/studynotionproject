@@ -25,7 +25,7 @@ export default function MyCourses() {
   }, []);
 
   return (
-    <div>
+    <div className="w-9/12 mx-auto">
       <div className="sm:mb-14 mb-14 flex sm:flex-row flex-col sm:gap-0 gap-5 items-center justify-between">
         <h1 className="text-3xl font-medium text-richblack-5">My Courses</h1>
         <IconBtn

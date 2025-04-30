@@ -18,7 +18,7 @@ const ExploreMore = () => {
 
   function setMyCard(value) {
     setCurrentTab(value);
-    console.log(value)
+    console.log(value);
     const result = HomePageExplore.filter((courses) => courses.tag === value);
     setCourses(result[0].courses);
     setCurrentCard(result[0].courses[0].heading);

@@ -9,7 +9,7 @@ import {
   resetPassword,
   resetPasswordToken,
 } from "../controllers/ResetPassword.js";
-import { auth } from "../middlewares/auth.js";
+import { auth, isAdmin } from "../middlewares/auth.js";
 
 
 // Route for sending OTP to the user's email
@@ -35,3 +35,11 @@ router.post("/reset-password-token", resetPasswordToken);
 
 //Route for reset password
 router.post("/reset-password", resetPassword);
+
+
+import { createRating } from "../controllers/RatingAndReviews.js";
+router.post("/createRating", createRating);
+
+// ********************************************************************************************************
+//                                      Reset Password
+// ********************************************************************************************************

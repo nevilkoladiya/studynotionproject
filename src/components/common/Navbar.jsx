@@ -31,10 +31,19 @@ const Navbar = () => {
       setLoading(false);
     })();
   }, []);
+
   const location = useLocation();
   const matchRoute = (route) => {
-    return matchPath({ path: route }, location.pathname);
+    if (route === "/") {
+      // Only match exactly "/"
+      return matchPath({ path: route, end: true }, location.pathname);
+    }
+    if (route === "/explore/home") {
+      return matchPath({ path: "/explore", end: false }, location.pathname);
+    }
+    return matchPath({ path: route, end: false }, location.pathname);
   };
+  
   function handleBurger() {
     setburger(!burger);
   }
@@ -49,6 +58,7 @@ const Navbar = () => {
         <div className="flex  w-11/12 max-w-maxContent justify-between items-center">
           {/* Image */}
           <div className="relative cursor-pointer group h-full">
+
             <div className="flex gap-1 items-center">
               <img
                 src={Logo_Small_Light}
@@ -58,7 +68,7 @@ const Navbar = () => {
             </div>
 
             <div
-              className={`invisible absolute top-[60%] z-10 flex w-[200px] -translate-x-[5%] translate-y-[3em] flex-col rounded-lg bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px] group-hover:z-30`}
+              className={` invisible absolute top-[60%] z-10 flex w-[200px] -translate-x-[5%] translate-y-[3em] flex-col rounded-lg bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px] group-hover:z-30`}
             >
               {/* Nav Link  */}
               <nav>
@@ -166,8 +176,8 @@ const Navbar = () => {
       </div>
       <div
         className={`${
-          location.pathname !== "/" ? "bg-richblack-800" : ""
-        } transition-all hidden duration-200 w-full md:flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700`}
+          location.pathname !== "/" ? "bg-richblack-600" : "bg-richblack-900"
+        } transition-all hidden duration-200 w-full md:flex h-14 items-center justify-center fixed top-0 z-50 border-b-[1px] border-b-richblack-700`}
       >
         <div className="flex justify-between w-11/12 max-w-maxContent items-center">
           {/* Image */}
@@ -187,45 +197,6 @@ const Navbar = () => {
               {NavbarLinks.map((item, i) => {
                 return (
                   <li className="" key={i}>
-                    {item.title === "Catalog" ? (
-                      <div
-                        className={`relative cursor-pointer group h-full ${
-                          matchRoute("/catalog/:catalogName")
-                            ? "text-yellow-25"
-                            : "text-richblack-25"
-                        }`}
-                      >
-                        <div className="flex gap-1 items-center cursor-pointer">
-                          <p>{item.title}</p>
-                          <IoIosArrowDown />
-                        </div>
-                        <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
-                          {loading ? (
-                            <p className="text-center">Loading...</p>
-                          ) : subLinks && subLinks.length ? (
-                            <>
-                              {subLinks.map((link, index) => (
-                                <NavLink
-                                  className="rounded-lg bg-transparent py-4 pl-4 hover:bg-richblack-50"
-                                  key={index}
-                                  to={`/catalog/${link.name
-                                    .split(" ")
-                                    .join("-")
-                                    .split("/")
-                                    .join("-")
-                                    .toLowerCase()}`}
-                                >
-                                  {link.name}
-                                </NavLink>
-                              ))}
-                            </>
-                          ) : (
-                            <p className="text-center">No Courses Found</p>
-                          )}
-                          <div className="absolute left-[50%] top-0 -z-10 h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-richblack-5"></div>
-                        </div>
-                      </div>
-                    ) : (
                       <NavLink
                         className={`${
                           matchRoute(item?.path)
@@ -236,7 +207,6 @@ const Navbar = () => {
                       >
                         {item.title}
                       </NavLink>
-                    )}
                   </li>
                 );
               })}
@@ -245,7 +215,7 @@ const Navbar = () => {
 
           {/* signup login dashboard */}
           <div className="flex gap-x-5 items-center">
-            {user && user?.accountType !== "Instructor" && (
+            {user && user?.accountType !== "Instructor" &&user?.accountType !== "Admin" && (
               <NavLink to="/dashboard/cart" className="relative">
                 <AiOutlineShoppingCart className="text-2xl text-richblack-100" />
                 {totalItems > 0 && (
