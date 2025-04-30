@@ -87,6 +87,7 @@ export function login(email, password, navigate) {
     dispatch(setLoading(true));
     try {
       console.log("LoginAPI test",LOGIN_API)
+      
       const response = await apiConnector("POST", LOGIN_API, {
         email,
         password,
