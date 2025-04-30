@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(
   cors({
     // origin: "http://localhost:3000",
-    origin: "https://studynotionproject-hb5kw303s-nevil-koladiyas-projects.vercel.app/",
+    origin: "*",
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
   })
